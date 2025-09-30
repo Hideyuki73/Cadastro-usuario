@@ -1,0 +1,20 @@
+{
+  "name": "cadastro-usuario",
+  "version": "1.0.0",
+  "description": "",
+  "main": "db.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Hideyuki73/Cadastro-usuario.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Hideyuki73/Cadastro-usuario/issues"
+  },
+  "homepage": "https://github.com/Hideyuki73/Cadastro-usuario#readme"
+}
