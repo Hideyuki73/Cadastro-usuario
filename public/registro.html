@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <title>Cadastrar Usuário</title>
+    <link
+      rel="stylesheet"
+      href="style.css"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Cadastrar Usuário</h1>
+      <form id="formCadastro">
+        <input
+          type="text"
+          id="nome"
+          placeholder="Nome"
+          required
+        />
+        <input
+          type="email"
+          id="email"
+          placeholder="E-mail"
+          required
+        />
+        <button type="submit">Cadastrar</button>
+      </form>
+      <a href="listar.html">Ver usuários cadastrados</a>
+    </div>
+
+    <script>
+      const form = document.getElementById('formCadastro')
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault()
+
+        const nome = document.getElementById('nome').value.trim()
+        const email = document.getElementById('email').value.trim()
+
+        const res = await fetch('/usuarios', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ nome, email }),
+        })
+
+        if (res.ok) {
+          alert('Usuário cadastrado com sucesso!')
+          form.reset()
+        } else {
+          const erro = await res.json()
+          alert(erro.erro || 'Erro ao cadastrar usuário.')
+        }
+      })
+    </script>
+  </body>
+</html>

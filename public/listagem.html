@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <title>Listagem de Usuários</title>
+    <link
+      rel="stylesheet"
+      href="style.css"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Usuários Cadastrados</h1>
+      <ul id="listaUsuarios"></ul>
+      <a href="criar.html">Voltar para cadastro</a>
+    </div>
+
+    <script>
+      async function carregarUsuarios() {
+        const res = await fetch('/usuarios')
+        const usuarios = await res.json()
+        const lista = document.getElementById('listaUsuarios')
+
+        lista.innerHTML = ''
+
+        if (usuarios.length === 0) {
+          lista.innerHTML = '<li>Nenhum usuário cadastrado.</li>'
+          return
+        }
+
+        usuarios.forEach((u) => {
+          const li = document.createElement('li')
+          li.textContent = `${u.nome} - ${u.email}`
+          lista.appendChild(li)
+        })
+      }
+
+      carregarUsuarios()
+    </script>
+  </body>
+</html>

@@ -16,5 +16,14 @@
   "bugs": {
     "url": "https://github.com/Hideyuki73/Cadastro-usuario/issues"
   },
-  "homepage": "https://github.com/Hideyuki73/Cadastro-usuario#readme"
+  "homepage": "https://github.com/Hideyuki73/Cadastro-usuario#readme",
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "pg": "^8.16.3"
+  },
+  "devDependencies": {
+    "jest": "^30.2.0",
+    "supertest": "^7.1.4"
+  }
 }
