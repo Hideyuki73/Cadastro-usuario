@@ -1,28 +1,37 @@
+require('dotenv').config()
 const express = require('express')
 const router = express.Router()
-const db = require('./db')
+const { Pool } = require('pg')
 
-// rota para listar
-router.get('/usuarios', async (req, res) => {
-  const result = await db.query('SELECT * FROM usuarios ORDER BY id DESC')
-  res.json(result.rows)
+const pool = new Pool({
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_DATABASE,
+  password: process.env.DB_PASSWORD,
+  port: process.env.DB_PORT,
 })
 
-// rota para cadastrar
-router.post('/usuarios', async (req, res) => {
+router.get('/', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM usuarios ORDER BY id ASC')
+    res.json(result.rows)
+  } catch (err) {
+    res.status(500).json({ erro: err.message })
+  }
+})
+
+router.post('/', async (req, res) => {
   const { nome, email } = req.body
 
-  if (!nome || !email) return res.status(400).json({ erro: 'Nome e email são obrigatórios' })
+  if (!nome || !email) {
+    return res.status(400).json({ erro: 'Nome e email são obrigatórios.' })
+  }
 
   try {
-    const result = await db.query('INSERT INTO usuarios (nome, email) VALUES ($1, $2) RETURNING *', [nome, email])
+    const result = await pool.query('INSERT INTO usuarios (nome, email) VALUES ($1, $2) RETURNING *', [nome, email])
     res.status(201).json(result.rows[0])
   } catch (err) {
-    if (err.code === '23505') {
-      return res.status(400).json({ erro: 'Email já cadastrado' })
-    }
-    console.error(err)
-    res.status(500).json({ erro: 'Erro no servidor' })
+    res.status(500).json({ erro: err.message })
   }
 })
 
