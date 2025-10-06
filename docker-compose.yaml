@@ -1,33 +1,44 @@
-version: '3.8'
+# Remova a linha "version: '3.8'", ela é obsoleta.
 
 services:
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - '3000:3000'
-    environment:
-      DB_USER: ${DB_USER}
-      DB_HOST: db
-      DB_DATABASE: ${DB_DATABASE}
-      DB_PASSWORD: ${DB_PASSWORD}
-      DB_PORT: ${DB_PORT}
-    depends_on:
-      - db
-    networks:
-      - app-network
-
   db:
     image: postgres:13
+    container_name: cadastro-usuario-db-1
+    restart: always
     environment:
-      POSTGRES_DB: ${DB_DATABASE}
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DATABASE}
     ports:
       - '5432:5432'
     volumes:
       - db-data:/var/lib/postgresql/data
+    # Adicione a verificação de saúde abaixo
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${DB_USER} -d ${DB_DATABASE}']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - app-network
+
+  app:
+    build: .
+    container_name: cadastro-usuario-app-1
+    restart: always
+    ports:
+      - '3000:3000'
+    environment:
+      DB_HOST: db # Use o nome do serviço como host
+      DB_PORT: 5432
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_DATABASE}
+    # Adicione a dependência com condição
+    depends_on:
+      db:
+        condition: service_healthy # Espera o healthcheck do 'db' passar
     networks:
       - app-network
 
